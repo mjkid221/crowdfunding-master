@@ -10,15 +10,34 @@
 
             <v-spacer></v-spacer>
             <v-toolbar-items>
-                <v-btn fab dark small color="blue" icon slot="activator" style = "font-size : 1.7em;">?</v-btn>
+              <div class="text-center">
+                <v-dialog
+                  v-model="dialog"
+                  width="500"
+                >
+                <template v-slot:activator="{ on, attrs }">
+                <v-btn fab dark small color="blue" style = "font-size : 1.7em;" v-bind="attrs" v-on="on">?</v-btn>
 
+                </template>
+
+                <v-card>
+                  <v-card-title class="headline lighten-2">
+                    InvestIdea Requirement
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-text>
+                    InvestIdea sincerely requests you that MetaMask is pre-installed on a supported browser (Chrome, Firefox) before submitting projects.
+                  </v-card-text>
+                </v-card>
+                </v-dialog>
+              </div>
 
                 <v-layout row justify-end >
               <v-dialog v-model="startProjectDialog" max-width="600px" persistent>
-                <v-btn fab dark color="blue" icon slot="activator" style = "font-size : 1.7em;">+</v-btn>
+                <v-btn fab dark color="blue" slot="activator" style = "font-size : 2.5em;">+</v-btn>
                 <v-card>
                   <v-card-title>
-                    <span class="headline font-weight-bold mt-2 ml-4">Bring your project to life</span>
+                    <span class="headline font-weight-bold mt-2 ml-4">Bring Your Project to Life</span>
                   </v-card-title>
                   <v-card-text class="pt-0">
                     <v-container class="pt-0" grid-list-md>
