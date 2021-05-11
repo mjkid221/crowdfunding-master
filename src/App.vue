@@ -1,89 +1,106 @@
 <template>
   <v-app class="grey lighten-3">
     <v-content>
-      <v-container>
+      
+      <v-container fluid style="background-image: url('https://demos.creative-tim.com/vue-material-kit/img/vue-mk-header.98fb6ce8.jpg');
+          background-size: cover;">
+        
+        <v-toolbar dark color="transparent" style = "box-shadow : none;">
+            <v-toolbar-title>Invest Idea</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+                <v-btn fab dark small color="blue" icon slot="activator" style = "font-size : 1.7em;">?</v-btn>
+
+
+                <v-layout row justify-end >
+              <v-dialog v-model="startProjectDialog" max-width="600px" persistent>
+                <v-btn fab dark color="blue" icon slot="activator" style = "font-size : 1.7em;">+</v-btn>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline font-weight-bold mt-2 ml-4">Bring your project to life</span>
+                  </v-card-title>
+                  <v-card-text class="pt-0">
+                    <v-container class="pt-0" grid-list-md>
+                      <v-layout wrap>
+                        <v-flex xs12>
+                          <v-text-field
+                            label="Title"
+                            persistent-hint
+                            v-model="newProject.title">
+                          </v-text-field>
+                        </v-flex>
+                        <v-flex xs12>
+                          <v-textarea
+                            label="Description"
+                            persistent-hint
+                            v-model="newProject.description">
+                          </v-textarea>
+                        </v-flex>
+                        <v-flex xs12 sm6>
+                          <v-text-field
+                            label="Amount Needed (ETH)"
+                            type="number"
+                            step="0.0001"
+                            min="0"
+                            v-model="newProject.amountGoal">
+                          </v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6>
+                          <v-text-field
+                            label="Duration (in days)"
+                            type="number"
+                            v-model="newProject.duration">
+                          </v-text-field>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      flat
+                      @click="startProjectDialog = false;
+                      newProject.isLoading = false;">
+                      Close
+                    </v-btn>
+                    <v-btn color="blue darken-1"
+                      flat
+                      @click="startProject"
+                      :loading="newProject.isLoading">
+                      Save
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-layout>
+            
+            
+
+          </v-toolbar-items>  
+        </v-toolbar> 
         <v-layout
           text-xs-center
-          wrap
+          
         >
-          <v-flex mb-4>
-            <h1 class="display-2 font-weight-bold mb-3">
-              Crowdfunding
+          <v-flex mb-1 >
+            <h1 class="display-4 font-weight-bold" style="color:white">
+              InvestIdea Crowdfunding
             </h1>
-            <p class="subheading font-weight-regular">
-              Utilizing Ethereum for Decentralized Crowdfunding
+            <p class="subheading font-weight-regular" style="color:white">
+              A Decentralized Ethereum Crowdfunding System
             </p>
           </v-flex>
+          
         </v-layout>
 
-        <v-layout row justify-center>
-          <v-dialog v-model="startProjectDialog" max-width="600px" persistent>
-            <v-btn slot="activator" color="primary" dark>Start a Project</v-btn>
-            <v-card>
-              <v-card-title>
-                <span class="headline font-weight-bold mt-2 ml-4">Bring your project to life</span>
-              </v-card-title>
-              <v-card-text class="pt-0">
-                <v-container class="pt-0" grid-list-md>
-                  <v-layout wrap>
-                    <v-flex xs12>
-                      <v-text-field
-                        label="Title"
-                        persistent-hint
-                        v-model="newProject.title">
-                      </v-text-field>
-                    </v-flex>
-                    <v-flex xs12>
-                      <v-textarea
-                        label="Description"
-                        persistent-hint
-                        v-model="newProject.description">
-                      </v-textarea>
-                    </v-flex>
-                    <v-flex xs12 sm6>
-                      <v-text-field
-                        label="Amount Needed (ETH)"
-                        type="number"
-                        step="0.0001"
-                        min="0"
-                        v-model="newProject.amountGoal">
-                      </v-text-field>
-                    </v-flex>
-                    <v-flex xs12 sm6>
-                      <v-text-field
-                        label="Duration (in days)"
-                        type="number"
-                        v-model="newProject.duration">
-                      </v-text-field>
-                    </v-flex>
-                  </v-layout>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="blue darken-1"
-                  flat
-                  @click="startProjectDialog = false;
-                  newProject.isLoading = false;">
-                  Close
-                </v-btn>
-                <v-btn color="blue darken-1"
-                  flat
-                  @click="startProject"
-                  :loading="newProject.isLoading">
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-layout>
       </v-container>
 
       <v-container
         grid-list-lg
       >
-        <h1 class="display-1 font-weight-bold mb-3">
+        <h1 class="display-1 font-weight-bold mb-3"  >
           Projects
         </h1>
         <v-layout row wrap>
@@ -188,8 +205,24 @@
           </v-flex>
         </v-layout>
       </v-container>
+
     </v-content>
+    <v-footer 
+          dark
+          
+        >
+          <v-card
+            class="transparent white--text text-xs-center" style = "box-shadow : none;"
+          >
+
+            <v-card-text class="white--text" >
+              Invest Ideas. Bring Your Project to Life.
+              {{ new Date().getFullYear() }} — <strong>InvestIdea [COMS4507 Project]</strong>
+            </v-card-text>
+          </v-card>
+        </v-footer>
   </v-app>
+  
 </template>
 
 <script>
