@@ -72,6 +72,31 @@ const abi = [
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "contributor",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "score",
+				"type": "uint256"
+			}
+		],
+		"name": "RatingReceived",
+		"type": "event"
+	},
+	{
 		"inputs": [],
 		"name": "amountGoal",
 		"outputs": [
@@ -207,6 +232,11 @@ const abi = [
 				"internalType": "uint256",
 				"name": "goalAmount",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "currentScore",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -228,6 +258,26 @@ const abi = [
 	{
 		"inputs": [],
 		"name": "raiseBy",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "rate",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "scoreRating",
 		"outputs": [
 			{
 				"internalType": "uint256",

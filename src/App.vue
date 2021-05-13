@@ -6,7 +6,7 @@
           background-size: cover;">
         
         <v-toolbar dark color="transparent" style = "box-shadow : none;">
-            <v-toolbar-title>Invest Idea</v-toolbar-title>
+            <v-toolbar-title>Invest Ideas</v-toolbar-title>
 
             <v-spacer></v-spacer>
             <v-toolbar-items>
@@ -33,11 +33,11 @@
               </div>
 
                 <v-layout row justify-end >
-              <v-dialog v-model="startProjectDialog" max-width="600px" persistent>
+              <v-dialog v-model="startProjectDialog" max-width="600px">
                 <v-btn fab dark color="blue" slot="activator" style = "font-size : 2.5em;">+</v-btn>
                 <v-card>
                   <v-card-title>
-                    <span class="headline font-weight-bold mt-2 ml-4">Bring Your Project to Life</span>
+                    <span class="headline font-weight-bold mt-2 ml-4">Bring Your Project to Life.</span>
                   </v-card-title>
                   <v-card-text class="pt-0">
                     <v-container class="pt-0" grid-list-md>
@@ -120,65 +120,31 @@
         grid-list-lg
       >
         <h1 class="display-1 font-weight-bold mb-3"  >
-          Projects
+          Invested Ideas
         </h1>
         <v-layout row wrap>
           <v-flex v-for="(project, index) in projectData" :key="index" xs12>
-            <v-dialog
-              v-model="project.dialog"
-              width="800"
-            >
-              <v-card>
-                <v-card-title class="headline font-weight-bold">
-                  {{ project.projectTitle }}
-                </v-card-title>
-                <v-card-text>
-                  {{ project.projectDesc }}
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    flat="flat"
-                    @click="projectData[index].dialog = false"
-                  >
-                    Close
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            
             <v-hover>
+              
               <v-card
                 slot-scope="{ hover }"
                 :class="`elevation-${hover ? 10 : 2}`"
+                @click = "projectData[index].dialog = true;"
               >
-                <v-card-title primary-title>
-                  <div>
-                    <div class="headline font-weight-bold">
-                      <v-chip
-                        label
-                        :color="stateMap[project.currentState].color"
-                        text-color="white" class="mt-0">
-                      {{ stateMap[project.currentState].text }}
-                      </v-chip>
-                      {{ project.projectTitle }}
-                    </div>
-                    <br/>
-                    <span>{{ project.projectDesc.substring(0, 100) }}</span>
-                    <span v-if="project.projectDesc.length > 100">
-                      ... <a @click="projectData[index].dialog = true">[Show full]</a>
-                    </span>
-                    <br/><br/>
-                    <small>Up Until: <b>{{ new Date(project.deadline * 1000) }}</b></small>
-                    <br/><br/>
-                    <small>Goal of <b>{{ project.goalAmount / 10**18 }} ETH </b></small>
-                    <small v-if="project.currentState == 1">wasn't achieved before deadline</small>
-                    <small v-if="project.currentState == 2">has been achieved</small>
-                  </div>
+              <v-dialog v-model="projectData[index].dialog" max-width = "800px">
+                    <v-card>
+                <v-card-title class="headline font-weight-bold">
+                  {{ project.projectTitle }}
                 </v-card-title>
+                
+                <v-card-text>
+                  {{ project.projectDesc }}
+                </v-card-text>
+                <v-divider></v-divider>
                 <v-flex
                   v-if="project.currentState == 0 && account != project.projectStarter"
-                  class="d-flex ml-3" xs12 sm6 md3>
+                  class="d-flex ml-3" xs12 sm6 md4>
                   <v-text-field
                     label="Amount (in ETH)"
                     type="number"
@@ -194,6 +160,7 @@
                   >
                     Fund
                   </v-btn>
+                  
                 </v-flex>
                 <v-flex class="d-flex ml-3" xs12 sm6 md3>
                   <v-btn
@@ -206,29 +173,86 @@
                     Get refund
                   </v-btn>
                 </v-flex>
-                <v-card-actions v-if="project.currentState == 0" class="text-xs-center">
-                  <span class="font-weight-bold" style="width: 200px;">
-                    {{ project.currentAmount / 10**18 }} ETH
-                  </span>
-                  <v-progress-linear
-                    height="10"
-                    :color="stateMap[project.currentState].color"
-                    :value="(project.currentAmount / project.goalAmount) * 100"
-                  ></v-progress-linear>
-                  <span class="font-weight-bold" style="width: 200px;">
-                    {{ project.goalAmount / 10**18 }} ETH
-                  </span>
-                </v-card-actions>
+                <v-divider></v-divider>
+                <v-layout row justify-end >
+                <v-flex>           <!-- --------------------- -->
+                  <v-btn
+                    class="mt-3"
+                    color="pink darken-1 white--text"
+                    v-if="account != project.projectStarter"
+                    
+                    @click="rateProject(index);
+                    project.isLoading = false;
+                    project.dialog = false"
+                  >
+                    BOOST PROJECT
+                  </v-btn>
+                </v-flex>
+                </v-layout>
+          
               </v-card>
+              </v-dialog>
+                <v-card-text>
+                <v-card-title primary-title>
+                  <div>
+                    <div class="headline font-weight-bold">
+                      <v-chip
+                        label
+                        :color="stateMap[project.currentState].color"
+                        text-color="white" class="mt-0">
+                      {{ stateMap[project.currentState].text }}
+                      </v-chip>
+                      <v-chip label :color="orange" class="mt-0"
+                        v-if="account == project.projectStarter">
+                        Owned
+                      </v-chip>
+                      {{ project.projectTitle }}
+                    </div>
+                    <br/>
+                    <span>{{ project.projectDesc.substring(0, 100) }}</span>
+                    <span v-if="project.projectDesc.length > 100">
+                      ... <a @click="projectData[index].dialog = true">[Show full]</a>
+                    </span>
+                    <br/><br/>
+                    <small>Up Until: <b>{{ new Date(project.deadline * 1000) }}</b></small>
+                    <br/><br/>
+                    <small>Goal of <b>{{ project.goalAmount / 10**18 }} ETH </b></small>
+                    <small v-if="project.currentState == 1">wasn't achieved before deadline</small>
+                    <small v-if="project.currentState == 2">has been achieved</small>
+                    <br/><br/>
+                    <small >
+                    Active Boosts: <b>{{ project.currentScore }} </b>
+                    </small>
+                  </div>
+                </v-card-title>
+            
+
+               
+            <v-card-actions v-if="project.currentState == 0" class="text-xs-center">
+              <span class="font-weight-bold" style="width: 200px;">
+                {{ project.currentAmount / 10**18 }} ETH
+              </span>
+              <v-progress-linear
+                height="10"
+                :color="stateMap[project.currentState].color"
+                :value="(project.currentAmount / project.goalAmount) * 100"
+              ></v-progress-linear>
+              <span class="font-weight-bold" style="width: 200px;">
+                {{ project.goalAmount / 10**18 }} ETH
+              </span>
+            </v-card-actions>
+                </v-card-text>
+              </v-card>
+
             </v-hover>
           </v-flex>
+           
         </v-layout>
       </v-container>
 
     </v-content>
     <v-footer 
           dark
-          
         >
           <v-card
             class="transparent white--text text-xs-center" style = "box-shadow : none;"
@@ -299,6 +323,7 @@ export default {
         const projectInfo = res.events.ProjectStarted.returnValues;
         projectInfo.isLoading = false;
         projectInfo.currentAmount = 0;
+        projectInfo.currentScore = 0;           //---------------------------------------------
         projectInfo.currentState = 0;
         projectInfo.contract = crowdfundProject(projectInfo.contractAddress);
         this.startProjectDialog = false;
@@ -325,6 +350,17 @@ export default {
         if (newTotal >= projectGoal) {
           this.projectData[index].currentState = 2;
         }
+        
+      });
+    },
+    rateProject(index){                   //--------------------------------------------------
+      const projectContract = this.projectData[index].contract;
+      this.projectData[index].isLoading = true;
+
+      projectContract.methods.rate().send({
+        from: this.account,
+      }).then(() => {
+          this.ProjectData[index].isLoading = false;
       });
     },
     getRefund(index) {

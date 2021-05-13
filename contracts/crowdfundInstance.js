@@ -1,8 +1,11 @@
 /* eslint-disable */
 import web3 from './web3';
 
-const address = '0x965908aD2fB6adFA9ef59C669D96Df96334BCC12'; //Goerli Test Network
+// const address = '0x965908aD2fB6adFA9ef59C669D96Df96334BCC12'; //Goerli Test Network
 // const address = '0x17A4fB8f868A209F804c3052BD8c3D28C3761F72'; // Kovan Test network
+
+const address = '0x7837fb8a9a06a22768cb145eD348ec29Db87a2C6'; // Address with rating feature
+
 const abi = [
 	{
 		"anonymous": false,

@@ -14,6 +14,8 @@ contract Crowdfunding {
         string projectDesc,
         uint256 deadline,
         uint256 goalAmount
+        
+        //uint256 ratingScore          // --------------------------------
     );
 
     /** @dev Function to start a new project.
@@ -27,9 +29,11 @@ contract Crowdfunding {
         string calldata description,
         uint durationInDays,
         uint amountToRaise
+        
+        //uint amountOfRate      // -------------------------------
     ) external {
         uint raiseUntil = block.timestamp + (durationInDays * (1 days));
-        Project newProject = new Project(payable(msg.sender), title, description, raiseUntil, amountToRaise);
+        Project newProject = new Project(payable(msg.sender), title, description, raiseUntil, amountToRaise); //-------------------------------
         projects.push(newProject);
         emit ProjectStarted(
             address(newProject),
@@ -38,6 +42,7 @@ contract Crowdfunding {
             description,
             raiseUntil,
             amountToRaise
+            //amountOfRate                        //-------------------------------
         );
     }                                                                                                                                   
 
@@ -62,6 +67,9 @@ contract Project {
     // State variables
     address payable public creator;
     uint public amountGoal; // required to reach at least this much, else everyone gets refund
+    
+    uint public scoreRating; // rating of score ----------------------------------------------
+    
     uint public completeAt;
     uint256 public currentBalance;
     uint public raiseBy;
@@ -74,7 +82,9 @@ contract Project {
     event FundingReceived(address contributor, uint amount, uint currentTotal);
     // Event that will be emitted whenever the project starter has received the funds
     event CreatorPaid(address recipient);
-
+    
+    event RatingReceived(address contributor, uint amount, uint score);    //----------------------------------------
+    
     // Modifier to check current state
     modifier inState(State _state) {
         require(state == _state);
@@ -94,6 +104,7 @@ contract Project {
         string memory projectDesc,
         uint fundRaisingDeadline,
         uint goalAmount
+        //uint ratingScore                    //----------------------------------------
     ) public {
         creator = projectStarter;
         title = projectTitle;
@@ -101,6 +112,8 @@ contract Project {
         amountGoal = goalAmount;
         raiseBy = fundRaisingDeadline;
         currentBalance = 0;
+        
+        scoreRating = 0;            //----------------------------------------
     }
 
     /** @dev Function to fund a certain project.
@@ -111,6 +124,15 @@ contract Project {
         currentBalance = currentBalance + msg.value;
         emit FundingReceived(msg.sender, msg.value, currentBalance);
         checkIfFundingCompleteOrExpired();
+    }
+    
+    /** @dev Function to rate a certain project.                        #----------------------------------------
+      */
+    function rate() external inState(State.Fundraising) payable {
+        require(msg.sender != creator);
+        
+        scoreRating = scoreRating + 1;
+        emit RatingReceived(msg.sender, msg.value, scoreRating);
     }
 
     /** @dev Function to change the project state depending on conditions.
@@ -169,7 +191,8 @@ contract Project {
         uint256 deadline,
         State currentState,
         uint256 currentAmount,
-        uint256 goalAmount
+        uint256 goalAmount,
+        uint256 currentScore            //----------------------------------------
     ) {
         projectStarter = creator;
         projectTitle = title;
@@ -178,5 +201,6 @@ contract Project {
         currentState = state;
         currentAmount = currentBalance;
         goalAmount = amountGoal;
+        currentScore = scoreRating;          //----------------------------------------
     }
 }
