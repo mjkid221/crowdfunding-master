@@ -3,5 +3,7 @@
 InvestIdea - Decentralised Crowdfunding platform using Ethereum Smart Contract. Programmed in Solidty 0.8.4^. Requires MetaMask extension.
 
 ```
-Contract Address (Goerli Dev Network): 0x7837fb8a9a06a22768cb145eD348ec29Db87a2C6
+Contract Address: 0x7837fb8a9a06a22768cb145eD348ec29Db87a2C6
 ```
+
+Sample website hosted on https://coms4507-313410.uc.r.appspot.com/. (Kovan network required).
